@@ -1,0 +1,28 @@
+#!/rec/sh
+
+mount -o remount,rw rootfs /
+
+if [ -e /data/local/tmp/recovery ]
+then
+        /rec/rm /data/local/tmp/recovery
+fi
+
+export RVER=.$1
+
+for i in $(ls /sbin/*$RVER)
+do
+        IDX=$(awk -v a="$i" -v b="$RVER" 'BEGIN{print index(a,b)}')
+        IDX=$(expr $IDX - 1)
+        export NEW=$(expr substr $i 1 $IDX)
+	/rec/rm -f $NEW
+	/rec/ln -sf $i $NEW
+done
+
+for i in $(ls /res/images/*$RVER)
+do
+        IDX=$(awk -v a="$i" -v b="$RVER" 'BEGIN{print index(a,b)}')
+        IDX=$(expr $IDX - 1)
+        export NEW=$(expr substr $i 1 $IDX)
+	/rec/rm -f $NEW
+	/rec/ln -sf $i $NEW
+done

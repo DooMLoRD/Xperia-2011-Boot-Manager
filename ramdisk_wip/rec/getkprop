@@ -1,0 +1,15 @@
+#!/rec/sh
+
+if [ -e /data/local/tmp/kernel ]
+then
+	export KERNELFILE=/data/local/tmp/kernel
+else
+	export KERNELFILE=/system/kernel/default
+fi
+
+if [ -e $KERNELFILE ]
+then
+	cat $KERNELFILE|grep $1|cut -d "=" -f 2
+else
+	echo kerneldefault
+fi

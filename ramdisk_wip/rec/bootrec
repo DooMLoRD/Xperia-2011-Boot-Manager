@@ -1,0 +1,21 @@
+#!/rec/sh
+
+export BOOTRECOVERY=`/rec/recoverytrigger`
+
+# Run charger if and only if no key has been pressed to enter into recovery mode
+case $BOOTRECOVERY in
+	internal)
+		export RECVER=`/rec/getrprop recoveryversion`
+		if [ "$RECVER" = "kerneldefault" -o -z $RECVER ]
+		then
+			/rec/runrec CWM5
+		else
+			/rec/runrec $RECVER
+		fi
+	      	;;
+        back)   /rec/runrec xRec;;
+        voldown)/rec/runrec CWM4;;
+	volup)/rec/runrec CWM5;;
+        menu)   /rec/runrec Menu;;
+	*) 	/system/bin/chargemon;;
+esac

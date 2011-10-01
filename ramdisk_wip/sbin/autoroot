@@ -1,0 +1,46 @@
+#!/sbin/sh
+
+if [ -e /system/autorooted ]
+then
+	exit
+else
+	mount -o remount,rw yaffs2 /system
+	touch /system/autorooted
+fi
+
+if [ ! -e /system/app/Superuser.apk ]
+then
+	cp /rec/root/Superuser.apk /system/app
+else
+	export CKSUMAPKNEW=`cksum /rec/root/Superuser.apk|awk '{print $1 $2}'`
+	export CKSUMAPKOLD=`cksum /system/app/Superuser.apk|awk '{print $1 $2}'`
+	if [ "$CKSUMAPKNEW" != "$CKSUMAPKOLD" ]
+	then
+		cp /rec/root/Superuser.apk /system/app
+	fi
+fi
+
+if [ ! -e /system/bin/su ]
+then
+	cp /rec/root/su /system/bin
+else
+	export CKSUMSUNEW=`cksum /rec/root/su|awk '{print $1 $2}'`
+	export CKSUMSUOLD=`cksum /system/bin/su|awk '{print $1 $2}'`
+	if [ "$CKSUMSUNEW" != "$CKSUMSUOLD" ]
+	then
+		cp /rec/root/su /system/bin
+	fi
+fi
+
+if [ -e /data/app/Superuser.apk ]
+then
+	rm /data/app/Superuser.apk
+fi
+
+if [ -e /system/xbin/su ]
+then
+	rm /system/xbin/su
+fi
+
+chmod 4755 /system/bin/su
+chmod 644 /system/app/Superuser.apk

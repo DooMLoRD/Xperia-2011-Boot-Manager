@@ -1,0 +1,15 @@
+#!/rec/sh
+
+if [ -e /data/local/tmp/recovery ]
+then
+	export RECOVERYFILE=/data/local/tmp/recovery
+else
+	export RECOVERYFILE=/system/recovery/default
+fi
+
+if [ -e $RECOVERYFILE ]
+then
+	cat $RECOVERYFILE|grep $1|cut -d "=" -f 2
+else
+	echo kerneldefault
+fi

@@ -1,0 +1,95 @@
+#!/rec/sh
+
+export PATH=/rec:$PATH
+
+mount -o remount,rw rootfs /
+
+# fixing CPU clocks to avoid issues in recovery
+echo 998400 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+echo 245000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+
+export MOUNTED=$(mount|grep system)
+if [ -n "$MOUNTED" ]
+then
+	umount -l /system
+	export RC=$?
+	if [ $RC -gt 0 ]
+	then
+		echo Error unmounting /system
+		exit 1
+	fi
+fi
+
+export MOUNTED=$(mount|grep data)
+if [ -n "$MOUNTED" ]
+then
+	umount -l /data
+	export RC=$?
+	if [ $RC -gt 0 ]
+	then
+		echo Error unmounting /data
+		exit 1
+	fi
+fi
+
+export MOUNTED=$(mount|grep cache)
+if [ -n "$MOUNTED" ]
+then
+	umount -l /cache
+	export RC=$?
+	if [ $RC -gt 0 ]
+	then
+		echo Error unmounting /cache
+		exit 1
+	fi
+fi
+
+for i in $(mount|grep sdcard|grep dev|awk '{print $3}')
+do
+	umount -l $i
+	export RC=$?
+	if [ $RC -gt 0 ]
+	then
+		echo Error unmounting sdcard
+		exit 1
+	fi
+done
+
+export SDCARDMPOINT=$(mount|grep sdcard|grep dev|awk '{print $3}')
+if [ -z "$SDCARDMPOINT" ]
+then
+	rm -r /sdcard
+	rm -r /not/sdcard
+	mkdir /sdcard
+	mount /dev/block/mmcblk0p1 /sdcard
+else
+		echo Error sdcard still mounted
+		exit 1
+fi
+
+rm -r /tmp
+mkdir /tmp
+rm -r /etc
+mkdir /etc
+cp /recovery.fstab /etc/recovery.fstab
+
+/rec/recswitch $1
+
+export RECOVERY=$(ps|grep recovery)
+if [ -z "$RECOVERY" ]
+then
+	/sbin/recovery &
+else
+        export RECOVERYPIDS=$(ps|grep recovery|awk '{print $1}'|xargs)
+	kill -9 $RECOVERYPIDS
+	/sbin/recovery &
+fi
+
+export ADB=$(ps|grep adbd)
+if [ -z "$ADB" ]
+then
+        /sbin/adbd recovery
+else
+        export ADBPIDS=$(ps|grep adbd|awk '{print $1}'|xargs)
+        kill -HUP $ADBPIDS
+fi

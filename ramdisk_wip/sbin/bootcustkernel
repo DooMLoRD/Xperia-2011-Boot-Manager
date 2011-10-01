@@ -1,0 +1,30 @@
+#!/sbin/sh
+
+export PATH=/sbin:/system/sbin:/system/bin:/system/xbin
+
+mount -t yaffs2 /dev/block/mtdblock2 /system
+
+if [ -e /system/kernel/boot.img -a -e /system/kernel/miniloader ]
+then
+	umount /cache
+	umount /sdcard
+	umount /cdrom
+	umount /data/DxDrm/fuse
+	killall -9 DxDrmServerIpc
+	for i in `ls /system/kernel/spl*`
+	do
+		insmod $i
+	done
+	export MODULE_LOADED=$(lsmod|grep splboot)
+	if [ -n "$MODULE_LOADED" ]
+	then
+		sync
+		cat /system/kernel/miniloader > /proc/splboot/image
+		cat /system/kernel/boot.img > /proc/splboot/boot_img
+		echo > /proc/splboot/boot
+	else
+		echo No splboot module found
+	fi
+else
+	echo Some files are missing
+fi

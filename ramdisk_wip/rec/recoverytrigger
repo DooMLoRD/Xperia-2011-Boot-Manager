@@ -1,0 +1,91 @@
+#!/rec/sh
+
+if [ -e /cache/recovery/false ]
+then
+	echo false
+	rm /cache/recovery/false
+	exit
+fi
+
+if [ -e /data/local/tmp/recoveryboot -o -e /cache/recovery/boot ]
+then
+	if [ -e /data/local/tmp/recoveryboot ]
+	then
+		rm /data/local/tmp/recoveryboot
+	fi
+	if [ -e /cache/recovery/boot ]
+	then
+		rm /cache/recovery/boot
+	fi
+	echo internal
+	exit
+fi
+
+if [ -e /data/local/tmp/extrecoveryboot ]
+then
+	rm /data/local/tmp/extrecoveryboot
+	# Transfer trigger to chargemon
+	touch /cache/recovery/chargemonboot
+	echo external
+	exit
+fi
+
+# Otherwise, check for key event
+cat /dev/input/event2>/data/local/tmp/keycheck & ;;
+sleep 3
+kill -9 $!
+
+if [ -s /data/local/tmp/keycheck ]
+then
+	/rec/hexdump < /data/local/tmp/keycheck > /data/local/tmp/keycheck1
+	rm /data/local/tmp/keycheck
+	mv /data/local/tmp/keycheck1 /data/local/tmp/keycheck
+fi
+
+export BACKKEYCHECK=`cat /data/local/tmp/keycheck|grep '0001 009e'`
+export HOMEKEYCHECK=`cat /data/local/tmp/keycheck|grep '0001 0066'`
+export MENUKEYCHECK=`cat /data/local/tmp/keycheck|grep '0001 00e5'`
+export CAMEKEYCHECK=`cat /data/local/tmp/keycheck|grep '0001 00d7'`
+export VOLUKEYCHECK=`cat /data/local/tmp/keycheck|grep '0001 0073'`
+export VOLDKEYCHECK=`cat /data/local/tmp/keycheck|grep '0001 0072'`
+
+rm /data/local/tmp/keycheck
+
+if [ -n "$BACKKEYCHECK" ]
+then
+	echo back
+	exit
+fi
+
+if [ -n "$HOMEKEYCHECK" ]
+then
+	echo home
+	exit
+fi
+
+if [ -n "$MENUKEYCHECK" ]
+then
+	echo menu
+	exit
+fi
+
+if [ -n "$CAMEKEYCHECK" ]
+then
+	echo camera
+	exit
+fi
+
+if [ -n "$VOLUKEYCHECK" ]
+then
+	echo volup
+	exit
+fi
+
+if [ -n "$VOLDKEYCHECK" ]
+then
+	echo voldown
+	exit
+fi
+
+touch /cache/recovery/false
+echo false

@@ -1,0 +1,33 @@
+#!/rec/sh
+
+mkdir /system/recovery
+chmod 755 /system/recovery
+mkdir /system/recovery/KernelDefaultxRec
+chmod 755 /system/recovery/KernelDefaultxRec
+mkdir /system/recovery/KernelDefaultCWM4
+chmod 755 /system/recovery/KernelDefaultCWM4
+mkdir /system/recovery/KernelDefaultCWM5
+chmod 755 /system/recovery/KernelDefaultCWM5
+mkdir /system/recovery/KernelDefaultMenu
+chmod 755 /system/recovery/KernelDefaultMenu
+
+echo recoverymethod=kerneldefault > /system/recovery/KernelDefaultxRec/recovery.desc
+echo chargemonreload=false >> /system/recovery/KernelDefaultxRec/recovery.desc
+echo recoveryversion=xRec >> /system/recovery/KernelDefaultxRec/recovery.desc
+
+echo recoverymethod=kerneldefault > /system/recovery/KernelDefaultCWM4/recovery.desc
+echo chargemonreload=false >> /system/recovery/KernelDefaultCWM4/recovery.desc
+echo recoveryversion=CWM4 >> /system/recovery/KernelDefaultCWM4/recovery.desc
+
+echo recoverymethod=kerneldefault > /system/recovery/KernelDefaultCWM5/recovery.desc
+echo chargemonreload=false >> /system/recovery/KernelDefaultCWM5/recovery.desc
+echo recoveryversion=CWM5 >> /system/recovery/KernelDefaultCWM5/recovery.desc
+
+echo recoverymethod=kerneldefault > /system/recovery/KernelDefaultMenu/recovery.desc
+echo chargemonreload=false >> /system/recovery/KernelDefaultMenu/recovery.desc
+echo recoveryversion=Menu >> /system/recovery/KernelDefaultMenu/recovery.desc
+
+chmod 644 /system/recovery/KernelDefaultCWM4/recovery.desc
+chmod 644 /system/recovery/KernelDefaultCWM5/recovery.desc
+chmod 644 /system/recovery/KernelDefaultxRec/recovery.desc
+chmod 644 /system/recovery/KernelDefaultMenu/recovery.desc
