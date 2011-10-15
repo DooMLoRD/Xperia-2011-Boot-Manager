@@ -30,10 +30,17 @@ then
 	exit
 fi
 
+# trigger LED notification
+echo "255" > /sys/class/leds/lv5219lg:rgb1:blue/brightness
+
 # Otherwise, check for key event
 cat /dev/input/event2>/data/local/tmp/keycheck & ;;
+
 sleep 3
 kill -9 $!
+
+# trigger LED notification
+echo "0" > /sys/class/leds/lv5219lg:rgb1:blue/brightness
 
 if [ -s /data/local/tmp/keycheck ]
 then

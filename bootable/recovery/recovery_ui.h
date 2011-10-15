@@ -66,6 +66,7 @@ int device_wipe_data();
 #define SELECT_ITEM         -4
 #define GO_BACK             -5
 
+/* normal */
 
 #define ITEM_REBOOT          0
 #define ITEM_APPLY_SDCARD    1
@@ -73,21 +74,22 @@ int device_wipe_data();
 #define ITEM_PARTITION       3
 #define ITEM_WIPE_CACHE      4
 #define ITEM_INSTALL_ZIP     5
-#define ITEM_POWEROFF        6
-#define ITEM_NANDROID        7
-#define ITEM_WIPE_DATA       8
+#define ITEM_WIPE_DATA       6
+#define ITEM_POWEROFF        7
+#define ITEM_NANDROID        8
+
 /* key press time out */
 /*
 #define ITEM_NANDROID        0
 #define ITEM_REBOOT          1
 #define ITEM_APPLY_SDCARD    2
 #define ITEM_ADVANCED        3
-#define ITEM_WIPE_CACHE      4
-#define ITEM_INSTALL_ZIP     5
-#define ITEM_WIPE_DATA       6
-#define ITEM_POWEROFF        7
-#define ITEM_PARTITION       8
-*/        
+#define ITEM_PARTITION       4
+#define ITEM_WIPE_CACHE      5
+#define ITEM_INSTALL_ZIP     6
+#define ITEM_WIPE_DATA       7
+#define ITEM_POWEROFF        8
+*/
 
 // Header text to display above the main menu.
 extern char* MENU_HEADERS[];

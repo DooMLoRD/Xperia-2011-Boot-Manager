@@ -4,7 +4,7 @@ mount -o remount,rw rootfs /
 
 if [ -e /data/local/tmp/recovery ]
 then
-        /rec/rm /data/local/tmp/recovery
+        rm /data/local/tmp/recovery
 fi
 
 export RVER=.$1

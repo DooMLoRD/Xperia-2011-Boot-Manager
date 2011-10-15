@@ -21,6 +21,8 @@
 #include "common.h"
 #include "extendedcommands.h"
 
+/* normal */
+
 char* MENU_HEADERS[] = { NULL };
 
 char* MENU_ITEMS[] = { "Reboot system NOW",
@@ -29,25 +31,28 @@ char* MENU_ITEMS[] = { "Reboot system NOW",
                        "Boot into CWM5 Recovery",
                        "Boot Custom Kernel (last selected)",
                        "Custom Kernel Selection Menu",
+                       "Execute Custom Script",
                        "Power Off",
                        NULL };
+
 /* key press time out */
 /*
-char* MENU_HEADERS[] = { "developed by DooMLoRD & Napstar",
+char* MENU_HEADERS[] = { "developed by DooMLoRD and Napstar",
 			 "",
 			 NULL };
 
-char* MENU_ITEMS[] = { "Continue Booting into OS",
+char* MENU_ITEMS[] = { "Continue booting into OS",
                        "Reboot system NOW",
                        "Boot into xRecovery-0.3-GBready",
-                       "Boot into CWM Recovery",
+                       "Boot into CWM4 Recovery",
+                       "Boot into CWM5 Recovery",
                        "Boot Custom Kernel (last selected)",
                        "Custom Kernel Selection Menu",
-                       "Boot SDCARD OS",
+                       "Execute Custom Script",
                        "Power Off",
                        NULL };
-*/
 
+*/
 /* these options need to be checked in recovery_ui.h */ 
 
 int device_recovery_start() {

@@ -1,5 +1,7 @@
 #!/rec/sh
 
+/rec/busybox mount -o remount,rw /system
+
 mkdir /system/recovery
 chmod 755 /system/recovery
 mkdir /system/recovery/KernelDefaultxRec

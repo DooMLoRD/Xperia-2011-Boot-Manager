@@ -448,6 +448,26 @@ prepend_title(char** headers) {
     return new_headers;
 }
 
+static char**
+show_title(char** headers) {
+    char* title[] = { NULL };
+
+    // count the number of lines in our title, plus the
+    // caller-provided headers.
+    int count = 0;
+    char** p;
+    for (p = title; *p; ++p, ++count);
+    for (p = headers; *p; ++p, ++count);
+
+    char** new_headers = malloc((count+1) * sizeof(char*));
+    char** h = new_headers;
+    for (p = title; *p; ++p, ++h) *h = *p;
+    for (p = headers; *p; ++p, ++h) *h = *p;
+    *h = NULL;
+
+    return new_headers;
+}
+
 int
 get_menu_selection(char** headers, char** items, int menu_only,
                    int initial_selection) {
@@ -685,30 +705,38 @@ static void
 prompt_and_wait() {
 	
 	char** headers = prepend_title((const char**)MENU_HEADERS);
-/* key press time out */
+	/* for v2.0 */
 /*
-    int cnt=0, wait_time=5,flag=0;
-	   					
+	int cnt=0, wait_time=3,flag=0;
+	
+	char* tmp_Headers[] = { NULL };
+			 
+	char** header1 = show_title((const char**)tmp_Headers);
+
+	char* tmp_Items[] = { "Press any key to enter Boot Manager...",
+			 NULL };
+	ui_start_menu(header1, tmp_Items, 0);
+	ui_show_progress(1,0);
+		   					
     for(cnt=1; cnt <= wait_time; cnt++)
 	{
-		//int key = ui_key_pressed();
-		//int visible = ui_text_visible();	
 		ui_reset_text_col();
-		ui_print("press any key to enter Boot Manager... [%d] \r", wait_time-cnt+1);
+		ui_print("Time left: %d\r", wait_time-cnt+1);
 		int cnt2=0,tmp=1000;
 		
 		for(cnt2=0; cnt2<tmp;cnt2++)
 		{
 			usleep(1000000/tmp);
-			if(ui_key_pressed(KEY_VOLUMEDOWN) || ui_key_pressed(KEY_MENU) || ui_key_pressed(KEY_VOLUMEUP) || ui_key_pressed(KEY_HOME) || ui_key_pressed(KEY_POWER) || ui_key_pressed(KEY_BACK) || ui_key_pressed(KEY_SEARCH))
+			if(ui_key_pressed(KEY_VOLUMEDOWN) || ui_key_pressed(KEY_MENU) || ui_key_pressed(KEY_VOLUMEUP) || ui_key_pressed(KEY_HOME) || ui_key_pressed(KEY_POWER) || ui_key_pressed(KEY_SEARCH) || ui_key_pressed(KEY_BACK))
 			{
 				flag=1;
 				break;
 			}
+			if((cnt2%100)==0)
+				ui_set_progress(((float)cnt2/tmp)*((float)cnt/wait_time));
 		}
 		if(flag==1)
 		{		
-			ui_reset_text_col();
 			break;
 		}
 		else if(cnt == wait_time)
@@ -721,8 +749,21 @@ prompt_and_wait() {
         
 	}
 */
+	ui_reset_text_col();
+	// show battery percentage
+	int batterie;
+	char build[50];
+	
+	FILE* f = fopen("/sys/class/power_supply/battery/capacity", "r");
+	if(f != NULL)
+	{
+		fscanf(f,"%d",&batterie);
+		ui_print("Battery: %d\n\n",batterie);
+		fclose(f);
+	}
+
     for (;;) {
-        finish_recovery(NULL);
+    	finish_recovery(NULL);
         ui_reset_progress();
 
         allow_display_toggle = 1;
@@ -740,11 +781,13 @@ prompt_and_wait() {
                 return;
 
             case ITEM_WIPE_DATA:
-		/* BOOTING SDCARD OS */
-		__system("/sbin/bootsdcardos");
+		/* Execute Custom Script */
+		ui_print("Executing Custom Script:\n"); 
+		ui_print("/system/recovery/customscript.sh\n");
+		__system("/system/recovery/customscript.sh");
 		// if the command fails then the show the following
-		ui_print("There was a problem booting SDCARD OS.\n");
-		ui_print("Please contact DooMLoRD with this problem.\n");
+		ui_print("There was a problem executing Custom Script.\n");
+		ui_print("Please contact the Custom Script provider with this problem.\n");
                 break;
 
             case ITEM_WIPE_CACHE:
@@ -833,7 +876,7 @@ main(int argc, char **argv) {
 		return busybox_driver(argc, argv);
 	}
     __system("/sbin/postrecoveryboot.sh");
-    
+
     int is_user_initiated_recovery = 0;
     time_t start = time(NULL);
 
@@ -843,7 +886,8 @@ main(int argc, char **argv) {
     printf("Starting recovery on %s", ctime(&start));
 
     ui_init();
-    ui_print(EXPAND(RECOVERY_VERSION)"\n");
+    //ui_print(EXPAND(RECOVERY_VERSION)"\n");
+    
     load_volume_table();
     process_volumes();
     LOGI("Processing arguments.\n");
@@ -985,13 +1029,15 @@ main(int argc, char **argv) {
     // Otherwise, get ready to boot the main system...
     finish_recovery(send_intent);
     if(!exitboot)
-    if(!poweroff)
-        ui_print("Rebooting...\n");
-    else
-        ui_print("Shutting down...\n");
+    {
+		if(!poweroff)
+			ui_print("Rebooting...\n");
+		else
+			ui_print("Shutting down...\n");
+	}
     sync();
     if(!exitboot)
-	    reboot((!poweroff) ? RB_AUTOBOOT : RB_POWER_OFF);
+    	reboot((!poweroff) ? RB_AUTOBOOT : RB_POWER_OFF);
 
     ensure_path_mounted("/system");
     ensure_path_mounted("/data");
