@@ -784,6 +784,7 @@ prompt_and_wait() {
 		/* Execute Custom Script */
 		ui_print("Executing Custom Script:\n"); 
 		ui_print("/system/recovery/customscript.sh\n");
+		ensure_path_mounted("/system");
 		__system("/system/recovery/customscript.sh");
 		// if the command fails then the show the following
 		ui_print("There was a problem executing Custom Script.\n");

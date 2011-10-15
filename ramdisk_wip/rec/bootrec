@@ -13,9 +13,9 @@ case $BOOTRECOVERY in
 			/rec/runrec $RECVER
 		fi
 	      	;;
-        back)   /rec/runrec xRec;;
-        voldown)/rec/runrec CWM4;;
-	volup)/rec/runrec CWM5;;
-        menu)   /rec/runrec Menu;;
+        back)   /sbin/bootxrec;;
+        voldown) /sbin/bootcwm4;;
+	volup) /sbin/bootcwm5;;
+        menu)   /sbin/bootmenu;;
 	*) 	/system/bin/chargemon;;
 esac

@@ -1,3 +1,35 @@
 #!/rec/sh
 
+mount -o remount,rw rootfs /
+
+for i in $(mount|grep sdcard|grep dev|awk '{print $3}')
+do
+	umount -l $i
+	export RC=$?
+	if [ $RC -gt 0 ]
+	then
+		echo Error unmounting sdcard
+		exit 1
+	fi
+done
+
+if [ -z "$SDCARDMPOINT" ]
+then
+	rm -r /sdcard
+	rm -r /not/sdcard
+	mkdir /sdcard
+	mount /dev/block/mmcblk0p1 /sdcard
+else
+		echo Error sdcard still mounted
+		exit 1
+fi
+
+# THEMEING: background
+if [ -e /sdcard/00_bm/res/images/bootmenu_bgk.png ]
+then
+	dd if=/sdcard/00_bm/res/images/bootmenu_bgk.png of=/res/images/bootmenu_bgk.png
+
+fi
+
+# launching menu
 /rec/runrec Menu
