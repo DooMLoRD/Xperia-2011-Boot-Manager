@@ -8,9 +8,14 @@ case $BOOTRECOVERY in
 		export RECVER=`/rec/getrprop recoveryversion`
 		if [ "$RECVER" = "kerneldefault" -o -z $RECVER ]
 		then
-			/rec/runrec CWM5
+			/sbin/bootcwm5
 		else
-			/rec/runrec $RECVER
+			case $RECVER in
+        			xRec) /sbin/bootxrec;;
+			        CWM4) /sbin/bootcwm4;;
+				CWM5) /sbin/bootcwm5;;
+			        Menu) /sbin/bootmenu;;
+			esac
 		fi
 	      	;;
         back)   /sbin/bootxrec;;

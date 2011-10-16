@@ -165,8 +165,91 @@ static void draw_text_line(int row, const char* t) {
   }
 }
 
-#define MENU_TEXT_COLOR 255, 0, 0, 255
-#define NORMAL_TEXT_COLOR 200, 200, 200, 255
+//THEMEING: menu color
+int get_menu_text_color(int i) {
+	
+	int int_r=0;
+	int int_g=255;
+	int int_b=0;
+	int int_a=255;
+
+	//ui_print("call for: %d",i);
+
+	FILE* f = fopen("/res/bm/menu-text-color", "r");
+	if(f != NULL)
+	{
+		fscanf(f,"%d, %d, %d, %d", &int_r, &int_g, &int_b, &int_a);
+		fclose(f);
+	}
+
+    // RED
+    if (i==0) {
+        return int_r;
+    }
+	
+    // GREEN
+    if (i==1) {
+        return int_g;
+    }
+	
+    // BLUE
+    if (i==2) {
+        return int_b;
+    }
+	
+    // ALPHA
+    if (i==3) {
+        return int_a;
+    }
+    
+    return 255;
+}
+
+//THEMEING: text color
+int get_normal_text_color(int i) {
+	
+	int int_r=200;
+	int int_g=200;
+	int int_b=200;
+	int int_a=255;
+
+	//ui_print("call for: %d",i);
+
+	FILE* f = fopen("/res/bm/normal-text-color", "r");
+	if(f != NULL)
+	{
+		fscanf(f,"%d, %d, %d, %d", &int_r, &int_g, &int_b, &int_a);
+		//ui_print("new values: %d, %d, %d, %d", int_r, int_b, int_g, int_a);
+		fclose(f);
+	}
+
+    // RED
+    if (i==0) {
+        return int_r;
+    }
+	
+    // GREEN
+    if (i==1) {
+        return int_g;
+    }
+	
+    // BLUE
+    if (i==2) {
+        return int_b;
+    }
+	
+    // ALPHA
+    if (i==3) {
+        return int_a;
+    }
+    
+    return 255;
+}
+
+#define MENU_TEXT_COLOR get_menu_text_color(0), get_menu_text_color(1), get_menu_text_color(2), get_menu_text_color(3)
+#define NORMAL_TEXT_COLOR get_normal_text_color(0), get_normal_text_color(1), get_normal_text_color(2), get_normal_text_color(3)
+//#define MENU_TEXT_COLOR 255, 0, 0, 255
+//#define NORMAL_TEXT_COLOR 200, 200, 200, 255
 #define HEADER_TEXT_COLOR NORMAL_TEXT_COLOR
 
 // Redraw everything on the screen.  Does not flip pages.

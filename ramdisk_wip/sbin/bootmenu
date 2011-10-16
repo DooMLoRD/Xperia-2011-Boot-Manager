@@ -28,7 +28,18 @@ fi
 if [ -e /sdcard/00_bm/res/images/bootmenu_bgk.png ]
 then
 	dd if=/sdcard/00_bm/res/images/bootmenu_bgk.png of=/res/images/bootmenu_bgk.png
+fi
 
+# THEMEING: menu-color-text
+if [ -e /sdcard/00_bm/res/menu-text-color ]
+then
+	dd if=/sdcard/00_bm/res/menu-text-color of=/res/bm/menu-text-color
+fi
+
+# THEMEING: normal-text-color
+if [ -e /sdcard/00_bm/res/normal-text-color ]
+then
+	dd if=/sdcard/00_bm/res/normal-text-color of=/res/bm/normal-text-color
 fi
 
 # launching menu
