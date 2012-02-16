@@ -27,8 +27,8 @@ char* MENU_HEADERS[] = { NULL };
 
 char* MENU_ITEMS[] = { "Reboot system NOW",
                        "Boot into xRecovery-0.3-GBready",
-                       "Boot into CWM4 Recovery",
-                       "Boot into CWM5 Recovery",
+                       "Boot into modified CWM5 Recovery",
+                       "Boot into official CWM5 Recovery",
                        "Boot Custom Kernel (last selected)",
                        "Custom Kernel Selection Menu",
                        "Execute Custom Script",
