@@ -40,6 +40,7 @@
 #include "edify/expr.h"
 #include <libgen.h>
 
+#define ABS_MT_POSITION_X 0x35  /* Center X ellipse position */
 
 int signature_check_enabled = 1;
 int script_assert_enabled = 1;
@@ -919,13 +920,25 @@ void show_advanced_menu()
             {
                 ui_print("Outputting key codes.\n");
                 ui_print("Go back to end debugging.\n");
-                int key;
+                struct keyStruct{
+					int code;
+					int x;
+					int y;
+				}*key;
                 int action;
                 do
                 {
                     key = ui_wait_key();
-                    action = device_handle_key(key, 1);
-                    ui_print("Key: %d\n", key);
+					if(key->code == ABS_MT_POSITION_X)
+					{
+				        action = device_handle_mouse(key, 1);
+						ui_print("Touch: X: %d\tY: %d\n", key->x, key->y);
+					}
+					else
+					{
+				        action = device_handle_key(key->code, 1);
+						ui_print("Key: %x\n", key->code);
+					}
                 }
                 while (action != GO_BACK);
                 break;
